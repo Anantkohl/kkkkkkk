@@ -13,7 +13,7 @@ id_pattern = re.compile(r'^.\d+$')
 SESSION = environ.get('SESSION', 'TechVJBot')
 API_ID = int(environ.get('API_ID', '14438754'))
 API_HASH = environ.get('API_HASH', 'baeb7d71bd10d8b5d8a97fce7ad9707d')
-BOT_TOKEN = environ.get('BOT_TOKEN', "7010614128:AAF2_DHvXPVRlMmnRb3iG0STKhXb4iyNGYE")
+BOT_TOKEN = environ.get('BOT_TOKEN', "")
 
 
 # This Pictures Is For Start Message Picture, You Can Add Multiple By Giving One Space Between Each.
@@ -59,7 +59,7 @@ DELETE_CHANNELS = [int(dch) if id_pattern.search(dch) else dch for dch in enviro
 
 
 # MongoDB information
-DATABASE_URI = environ.get('DATABASE_URI', "mongodb+srv://anantkohliind:anantkohliind@cluster0.8ypgdns.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0")   # IF Multiple Database Is False Then Fill Only This Database Url.
+DATABASE_URI = environ.get('DATABASE_URI', "")   # IF Multiple Database Is False Then Fill Only This Database Url.
 DATABASE_NAME = environ.get('DATABASE_NAME', "techvjclonefilterbot")
 COLLECTION_NAME = environ.get('COLLECTION_NAME', 'vjcollection')
 
@@ -166,7 +166,7 @@ if 'DYNO' in environ:
     ON_HEROKU = True
 else:
     ON_HEROKU = False
-URL = environ.get("URL", "https://eerie-bessy-mrvipkohli-3a20f449.koyeb.app/")
+URL = environ.get("URL", "https://ideological-sherry-mrvipkohli-23d6c819.koyeb.app/")
 
 
 # Rename Info : If True Then Bot Rename File Else Not
