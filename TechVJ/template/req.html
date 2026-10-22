@@ -1,793 +1,414 @@
+<!-- © LazyDeveloper / KK_BOTS -->
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="hi" class="dark">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>{{file_name}} | KK_BOTS</title>
+    
     <link rel="shortcut icon" href="https://graph.org/file/ab71e4363ebc7a7c992b1.jpg" type="image/x-icon">
-    <meta property="og:image" content="https://graph.org/file/ab71e4363ebc7a7c992b1.jpg">
-    <meta name="theme-color" content="#090d16">
-    <title>{{file_name}} | Stream Portal</title>
-
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
-
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                        mono: ['"JetBrains Mono"', 'monospace'],
-                    },
-                    colors: {
-                        brand: {
-                            50: '#eef2ff',
-                            500: '#6366f1',
-                            600: '#4f46e5',
-                            accent: '#ec4899',
-                            cyan: '#06b6d4',
-                        }
-                    },
-                    boxShadow: {
-                        'neon-indigo': '0 0 25px -5px rgba(99, 102, 241, 0.45)',
-                        'neon-pink': '0 0 25px -5px rgba(236, 72, 153, 0.45)',
-                    }
-                }
-            }
-        }
-    </script>
-
-    <!-- Font Awesome 6 Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Plyr CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+    
+    <!-- Plyr CSS & Tailwind -->
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     <style>
-        /* Ambient subtle grain and mesh backgrounds */
-        body {
-            background-color: #06080e;
-            background-image: 
-                radial-gradient(at 15% 15%, rgba(99, 102, 241, 0.15) 0px, transparent 45%),
-                radial-gradient(at 85% 20%, rgba(236, 72, 153, 0.12) 0px, transparent 40%),
-                radial-gradient(at 50% 85%, rgba(6, 182, 212, 0.1) 0px, transparent 50%);
-            background-attachment: fixed;
-            min-height: 100vh;
+        :root {
+            --plyr-color-main: #ec4899;
+            --plyr-video-control-color: #ffffff;
+            --plyr-video-control-background-hover: rgba(236, 72, 153, 0.4);
         }
-
-        /* Glassmorphism styling */
-        .glass-card {
-            background: rgba(15, 23, 42, 0.65);
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: #030712;
+            color: #f3f4f6;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .glass-panel {
+            background: rgba(17, 24, 39, 0.7);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
         }
-
-        .glass-panel {
-            background: rgba(11, 15, 26, 0.85);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.07);
-        }
-
-        /* Player Customization */
-        :root {
-            --plyr-color-main: #6366f1;
-            --plyr-video-background: #000000;
-            --plyr-control-radius: 8px;
-        }
-
-        .plyr--video {
+        .player-wrapper {
+            position: relative;
             border-radius: 1rem;
             overflow: hidden;
-            box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.9), 0 0 20px 0 rgba(99, 102, 241, 0.15);
+            background: #000;
         }
-
-        /* Gesture feedback ripples & badges */
-        .gesture-indicator {
+        .gesture-surface {
+            position: absolute;
+            inset: 0 0 54px 0;
+            z-index: 25;
+            display: flex;
+            touch-action: manipulation;
+            cursor: pointer;
+        }
+        .gesture-side {
+            flex: 1;
+            height: 100%;
+            position: relative;
+        }
+        .seek-pill {
             position: absolute;
             top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 90px;
-            height: 90px;
-            border-radius: 9999px;
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #fff;
-            pointer-events: none;
+            transform: translateY(-50%) scale(0.6);
             opacity: 0;
-            transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.25s ease;
-            z-index: 35;
+            pointer-events: none;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            background: rgba(15, 23, 42, 0.85);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 9999px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+            z-index: 40;
         }
-
-        .gesture-indicator.active {
+        .seek-pill.active {
             opacity: 1;
-            transform: translateY(-50%) scale(1.08);
+            transform: translateY(-50%) scale(1);
         }
-
+        #leftPill { left: 16%; }
+        #rightPill { right: 16%; }
+        
         .speed-badge {
             position: absolute;
-            top: 18px;
+            top: 20px;
             left: 50%;
             transform: translateX(-50%) translateY(-10px);
             opacity: 0;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             pointer-events: none;
-            z-index: 36;
+            transition: all 0.2s ease;
+            background: linear-gradient(135deg, rgba(236, 72, 153, 0.9), rgba(168, 85, 247, 0.9));
+            color: #fff;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            box-shadow: 0 4px 20px rgba(236, 72, 153, 0.5);
+            z-index: 40;
         }
-
         .speed-badge.active {
             opacity: 1;
             transform: translateX(-50%) translateY(0);
         }
-
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 7px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #07090e;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #1e293b;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #334155;
-        }
     </style>
 </head>
 
-<body class="text-slate-200 antialiased selection:bg-brand-500 selection:text-white flex flex-col min-h-screen">
+<body class="min-h-screen flex flex-col justify-between selection:bg-pink-500 selection:text-white">
 
-    <!-- Top Navigation Bar -->
-    <header class="sticky top-0 z-40 glass-panel border-b border-white/5">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            
-            <!-- Left Branding & Drawer Button -->
+    <!-- Top Navigation -->
+    <header class="sticky top-0 z-40 glass-panel border-b border-gray-800/80">
+        <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <button onclick="toggleSidebar()" aria-label="Open Sidebar" class="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-white/10 text-slate-300 hover:text-white transition duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500/50">
-                    <i class="fa-solid fa-bars-staggered text-lg"></i>
-                </button>
-                
-                <a href="#" class="flex items-center gap-3 group">
-                    <div class="relative">
-                        <img src="https://graph.org/file/ab71e4363ebc7a7c992b1.jpg" 
-                             alt="Logo" 
-                             onerror="this.src='https://placehold.co/100x100/1e1b4b/indigo?text=KK'" 
-                             class="w-9 h-9 rounded-xl object-cover ring-2 ring-indigo-500/40 group-hover:ring-indigo-400 transition">
-                        <span class="absolute -top-0.5 -right-0.5 flex h-2.5 w-2.5">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-                        </span>
-                    </div>
-                    <div class="flex flex-col">
-                        <span class="font-extrabold tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-white via-slate-100 to-indigo-300 text-lg sm:text-xl">
-                            KK_BOTS <span class="text-xs px-2 py-0.5 rounded-md font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 uppercase tracking-widest ml-1">Stream</span>
-                        </span>
-                    </div>
-                </a>
+                <img src="https://graph.org/file/ab71e4363ebc7a7c992b1.jpg" alt="Logo" class="w-10 h-10 rounded-xl object-cover ring-2 ring-pink-500/30">
+                <div class="flex flex-col">
+                    <span class="font-black text-lg bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-rose-400 to-amber-400 leading-tight">KK_BOTS</span>
+                    <span class="text-[10px] uppercase tracking-widest text-gray-400 font-semibold">STREAM HUB</span>
+                </div>
             </div>
 
-            <!-- Right Links -->
             <div class="flex items-center gap-2">
-                <a href="https://t.me/KK_BOTS" target="_blank" rel="noopener noreferrer" class="hidden sm:inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-sky-500/10 hover:bg-sky-500/20 text-sky-400 border border-sky-500/30 text-xs font-semibold tracking-wide transition">
-                    <i class="fa-brands fa-telegram text-sm"></i> Join Telegram
+                <a href="https://t.me/KK_BOTS" target="_blank" class="px-3 py-1.5 rounded-lg bg-pink-500/10 hover:bg-pink-500/20 text-pink-400 border border-pink-500/20 text-xs font-semibold flex items-center gap-1.5 transition">
+                    <i class="bi bi-telegram"></i>
+                    <span>Channel</span>
                 </a>
-                <button onclick="shareLink()" title="Share Link" class="p-2.5 rounded-xl bg-slate-800/80 hover:bg-slate-700/80 border border-white/10 text-slate-300 hover:text-white transition">
-                    <i class="fa-solid fa-share-nodes text-sm"></i>
-                </button>
             </div>
         </div>
     </header>
 
-    <!-- Side Drawer Menu Backdrop -->
-    <div id="drawer-backdrop" onclick="toggleSidebar()" class="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm transition-opacity opacity-0 pointer-events-none duration-300"></div>
-
-    <!-- Side Drawer Offcanvas Navigation -->
-    <aside id="drawer-menu" class="fixed top-0 left-0 bottom-0 z-50 w-80 max-w-[85vw] glass-panel border-r border-white/10 shadow-2xl transform -translate-x-full transition-transform duration-300 ease-in-out flex flex-col justify-between overflow-y-auto">
-        <div>
-            <!-- Drawer Header -->
-            <div class="p-5 border-b border-white/10 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <img src="https://graph.org/file/ab71e4363ebc7a7c992b1.jpg" alt="KK BOTS" onerror="this.src='https://placehold.co/100x100/1e1b4b/indigo?text=KK'" class="w-11 h-11 rounded-xl ring-2 ring-indigo-500/50 shadow-md">
-                    <div>
-                        <h3 class="font-bold text-white text-base leading-tight">KK_BOTS Stream</h3>
-                        <p class="text-xs text-indigo-400 flex items-center gap-1.5 mt-0.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Online Service
-                        </p>
-                    </div>
+    <!-- Main Content -->
+    <main class="max-w-5xl mx-auto w-full px-4 py-4 sm:py-6 flex-1 flex flex-col gap-5">
+        
+        <!-- Video Header Info -->
+        <div class="glass-panel p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Direct Stream
+                    </span>
+                    <span class="text-xs text-gray-400 font-mono">MP4 / MKV</span>
                 </div>
-                <button onclick="toggleSidebar()" class="p-2 text-slate-400 hover:text-white rounded-lg hover:bg-white/5 transition">
-                    <i class="fa-solid fa-xmark text-lg"></i>
+                <h1 id="movieTitle" class="text-base sm:text-lg font-bold text-gray-100 truncate" title="{{file_name}}">
+                    {{file_name}}
+                </h1>
+            </div>
+
+            <div class="flex items-center gap-2 flex-shrink-0">
+                <button onclick="copyCurrentLink()" class="px-3 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-xs font-semibold text-gray-200 border border-gray-700 flex items-center gap-1.5 transition active:scale-95">
+                    <i class="bi bi-link-45deg text-sm"></i>
+                    <span>Copy Link</span>
                 </button>
-            </div>
-
-            <!-- Social Action Buttons -->
-            <div class="p-4 space-y-2">
-                <a href="https://t.me/KK_BOTS" target="_blank" class="w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white font-medium text-sm transition shadow-lg shadow-indigo-600/20">
-                    <span class="flex items-center gap-2.5"><i class="fa-brands fa-telegram text-base"></i> Telegram Channel</span>
-                    <i class="fa-solid fa-arrow-up-right-from-square text-xs opacity-75"></i>
+                <a id="downloadBtn" href="{{file_url}}" download class="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 hover:opacity-90 text-xs font-bold text-white shadow-lg shadow-pink-500/25 flex items-center gap-1.5 transition active:scale-95">
+                    <i class="bi bi-cloud-arrow-down-fill text-sm"></i>
+                    <span>Download</span>
                 </a>
-                <div class="grid grid-cols-2 gap-2 pt-1">
-                    <a href="https://t.me/movie_a1" target="_blank" class="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-white/10 text-xs font-semibold text-slate-200 transition">
-                        <i class="fa-solid fa-film text-purple-400"></i> Movies Bot
-                    </a>
-                    <a href="https://telegram.me/R_KOHLI" target="_blank" class="flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-slate-800/80 hover:bg-slate-700 border border-white/10 text-xs font-semibold text-slate-200 transition">
-                        <i class="fa-solid fa-headset text-emerald-400"></i> Support
-                    </a>
-                </div>
-            </div>
-
-            <!-- Categories / Explore Links -->
-            <div class="px-4 py-2">
-                <span class="text-[11px] font-bold uppercase tracking-wider text-slate-400 px-2">Quick Navigation</span>
-                <nav class="mt-2 space-y-1">
-                    <a href="https://telegram.me/movie_a1" target="_blank" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 text-slate-300 hover:text-white text-sm font-medium transition">
-                        <i class="fa-solid fa-fire text-amber-500 w-4"></i> Trending Releases
-                    </a>
-                    <a href="https://telegram.me/movie_a1" target="_blank" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 text-slate-300 hover:text-white text-sm font-medium transition">
-                        <i class="fa-solid fa-clapperboard text-cyan-400 w-4"></i> Bollywood & Hindi
-                    </a>
-                    <a href="https://telegram.me/movie_a1" target="_blank" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 text-slate-300 hover:text-white text-sm font-medium transition">
-                        <i class="fa-solid fa-tv text-pink-400 w-4"></i> Web Series Hub
-                    </a>
-                    <a href="https://telegram.me/movie_a1" target="_blank" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/5 text-slate-300 hover:text-white text-sm font-medium transition">
-                        <i class="fa-solid fa-globe text-indigo-400 w-4"></i> Hollywood Dubbed
-                    </a>
-                </nav>
             </div>
         </div>
 
-        <!-- Drawer Footer -->
-        <div class="p-4 border-t border-white/10 bg-slate-950/40">
-            <div class="flex items-center justify-between text-xs text-slate-400">
-                <span>Developer</span>
-                <a href="https://telegram.me/R_KOHLI" target="_blank" class="text-indigo-400 font-semibold hover:underline">RAVI KOHLI</a>
+        <!-- Player Screen & Custom Gestures -->
+        <div class="player-wrapper shadow-2xl ring-1 ring-white/10">
+            <!-- 2X Indicator -->
+            <div id="speedBadge" class="speed-badge">
+                <i class="bi bi-lightning-charge-fill mr-1"></i> 2X Speed
+            </div>
+
+            <!-- Double Tap Seek Indicators -->
+            <div id="leftPill" class="seek-pill">
+                <i class="bi bi-arrow-counterclockwise text-pink-400"></i> -10s
+            </div>
+            <div id="rightPill" class="seek-pill">
+                +10s <i class="bi bi-arrow-clockwise text-pink-400"></i>
+            </div>
+
+            <!-- Video Element: Always Uses Real Jinja URL -->
+            <video id="player" playsinline controls preload="metadata" class="w-full h-full">
+                <source src="{{file_url}}" type="video/mp4">
+                <source src="{{file_url}}" type="video/x-matroska">
+            </video>
+
+            <!-- Touch / Click Gesture Layer (Press hold for 2x, double tap for seek) -->
+            <div id="gestureLayer" class="gesture-surface">
+                <div class="gesture-side" id="leftSide"></div>
+                <div class="gesture-side" id="rightSide"></div>
             </div>
         </div>
-    </aside>
 
-    <!-- Main Content Area -->
-    <main class="flex-grow max-w-5xl mx-auto w-full px-3 sm:px-6 py-6 sm:py-10 space-y-8">
-
-        <!-- File Title & Info Badge Card -->
-        <section class="glass-card rounded-2xl p-4 sm:p-6 shadow-xl border border-white/10 relative overflow-hidden">
-            <div class="absolute -right-16 -top-16 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                <div class="space-y-1.5 flex-1 min-w-0">
-                    <div class="flex items-center gap-2">
-                        <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping"></span>
-                            Direct Stream
-                        </span>
-                        <span class="text-xs text-slate-400 font-mono" id="stream-protocol">MP4 / MKV</span>
-                    </div>
-                    <h1 id="file-title" class="text-lg sm:text-2xl font-bold tracking-tight text-white break-words line-clamp-2">
-                        {{file_name}}
-                    </h1>
-                </div>
-
-                <!-- Stream Utility Tools (Copy Link & Direct Download) -->
-                <div class="flex items-center gap-2 self-start sm:self-center shrink-0">
-                    <button onclick="copyStreamURL()" id="copy-btn" class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 border border-white/10 text-xs font-semibold text-slate-200 transition">
-                        <i class="fa-regular fa-copy"></i>
-                        <span id="copy-text">Copy Link</span>
-                    </button>
-                    <button onclick="lazyDownload()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-pink-600 to-rose-600 hover:from-pink-500 hover:to-rose-500 text-white text-xs font-bold transition shadow-lg shadow-pink-600/20">
-                        <i class="fa-solid fa-cloud-arrow-down"></i>
-                        <span>Download</span>
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Video Player Section -->
-        <section class="relative group">
-            <div class="absolute -inset-1 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-3xl blur-xl opacity-20 group-hover:opacity-30 transition duration-700 pointer-events-none"></div>
-            
-            <div class="relative glass-card rounded-2xl p-2 sm:p-3 border border-white/10 overflow-hidden" id="player-container">
-                
-                <!-- Speed 2X Badge HUD -->
-                <div id="speed-badge" class="speed-badge flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/90 border border-indigo-500/50 shadow-lg shadow-indigo-500/25 text-indigo-300 font-mono text-xs font-bold tracking-wider">
-                    <span class="w-2 h-2 rounded-full bg-indigo-400 animate-ping"></span>
-                    <span>2X SPEED</span>
-                    <i class="fa-solid fa-angles-right text-[10px]"></i>
-                </div>
-
-                <!-- Double Tap Backward Indicator (Left) -->
-                <div id="rewind-indicator" class="gesture-indicator left-6 sm:left-12">
-                    <i class="fa-solid fa-backward-step text-xl text-indigo-400 mb-0.5"></i>
-                    <span class="text-xs font-bold tracking-tight font-mono">-10s</span>
-                </div>
-
-                <!-- Double Tap Forward Indicator (Right) -->
-                <div id="forward-indicator" class="gesture-indicator right-6 sm:right-12">
-                    <i class="fa-solid fa-forward-step text-xl text-indigo-400 mb-0.5"></i>
-                    <span class="text-xs font-bold tracking-tight font-mono">+10s</span>
-                </div>
-
-                <!-- Video Element -->
-                <video id="player" class="player rounded-xl w-full aspect-video" playsinline controls preload="metadata">
-                    <source src="{{file_url}}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-
-                <!-- Gesture Touch/Click Overlay Zone -->
-                <div id="gesture-surface" class="absolute inset-0 z-30 select-none cursor-pointer" style="touch-action: manipulation; bottom: 58px;"></div>
-            </div>
-        </section>
-
-        <!-- "Play With External Apps" Section -->
-        <section class="space-y-4">
-            <div class="flex items-center justify-between">
+        <!-- External Players Grid -->
+        <div>
+            <div class="flex items-center justify-between mb-3 px-1">
                 <div>
-                    <h2 class="text-lg font-bold text-white flex items-center gap-2">
-                        <i class="fa-solid fa-play text-indigo-400 text-sm"></i> Open in External Player
+                    <h2 class="text-sm font-bold text-gray-200 flex items-center gap-1.5">
+                        <i class="bi bi-play-circle-fill text-pink-500"></i>
+                        एक्सटर्नल प्लेयर में चलाएं (Recommended)
                     </h2>
-                    <p class="text-xs text-slate-400">Watch without buffering or codec errors in your favorite native media app</p>
+                    <p class="text-[11px] text-gray-400">यदि ब्राउज़र में केवल ऑडियो आ रहा है या वीडियो अटक रहा है, तो VLC या MX Player चुनें।</p>
                 </div>
             </div>
 
-            <!-- Player Grid Cards -->
-            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4">
-                
-                <!-- VLC Player -->
-                <button onclick="vlc_player()" class="glass-card hover:bg-slate-800/80 p-4 rounded-2xl border border-white/10 hover:border-amber-500/50 flex flex-col items-center justify-center gap-2.5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-amber-500/10 group text-center w-full">
-                    <div class="w-12 h-12 rounded-2xl bg-amber-500/10 flex items-center justify-center text-amber-500 group-hover:scale-110 transition duration-300">
-                        <i class="fa-solid fa-traffic-cone text-2xl"></i>
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
+                <!-- VLC -->
+                <button onclick="launchPlayer('vlc')" class="glass-panel p-3 rounded-xl hover:border-amber-500/40 hover:bg-gray-800/80 transition flex flex-col items-center justify-center gap-1.5 group active:scale-95">
+                    <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-xl group-hover:scale-110 transition">
+                        <i class="bi bi-cone-striped"></i>
                     </div>
-                    <div>
-                        <span class="block text-sm font-semibold text-slate-200 group-hover:text-amber-400">VLC Player</span>
-                        <span class="text-[11px] text-slate-400">Universal Codecs</span>
-                    </div>
+                    <span class="text-xs font-bold text-gray-200">VLC Player</span>
+                    <span class="text-[9px] text-gray-400">Universal Codecs</span>
                 </button>
 
                 <!-- MX Player -->
-                <button onclick="mx_player()" class="glass-card hover:bg-slate-800/80 p-4 rounded-2xl border border-white/10 hover:border-blue-500/50 flex flex-col items-center justify-center gap-2.5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-blue-500/10 group text-center w-full">
-                    <div class="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-500 group-hover:scale-110 transition duration-300">
-                        <i class="fa-solid fa-circle-play text-2xl"></i>
+                <button onclick="launchPlayer('mx')" class="glass-panel p-3 rounded-xl hover:border-blue-500/40 hover:bg-gray-800/80 transition flex flex-col items-center justify-center gap-1.5 group active:scale-95">
+                    <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center text-xl group-hover:scale-110 transition">
+                        <i class="bi bi-play-btn-fill"></i>
                     </div>
-                    <div>
-                        <span class="block text-sm font-semibold text-slate-200 group-hover:text-blue-400">MX Player</span>
-                        <span class="text-[11px] text-slate-400">HW+ Decoding</span>
-                    </div>
+                    <span class="text-xs font-bold text-gray-200">MX Player</span>
+                    <span class="text-[9px] text-gray-400">HW+ Decoding</span>
                 </button>
 
                 <!-- PlayIt -->
-                <button onclick="playit_player()" class="glass-card hover:bg-slate-800/80 p-4 rounded-2xl border border-white/10 hover:border-cyan-500/50 flex flex-col items-center justify-center gap-2.5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-cyan-500/10 group text-center w-full">
-                    <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 flex items-center justify-center text-cyan-400 group-hover:scale-110 transition duration-300">
-                        <i class="fa-solid fa-bolt text-2xl"></i>
+                <button onclick="launchPlayer('playit')" class="glass-panel p-3 rounded-xl hover:border-cyan-500/40 hover:bg-gray-800/80 transition flex flex-col items-center justify-center gap-1.5 group active:scale-95">
+                    <div class="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-xl group-hover:scale-110 transition">
+                        <i class="bi bi-phone-flip"></i>
                     </div>
-                    <div>
-                        <span class="block text-sm font-semibold text-slate-200 group-hover:text-cyan-400">Play-it</span>
-                        <span class="text-[11px] text-slate-400">Fast Stream</span>
-                    </div>
+                    <span class="text-xs font-bold text-gray-200">PlayIt</span>
+                    <span class="text-[9px] text-gray-400">Fast Stream</span>
                 </button>
 
                 <!-- KM Player -->
-                <button onclick="km_player()" class="glass-card hover:bg-slate-800/80 p-4 rounded-2xl border border-white/10 hover:border-purple-500/50 flex flex-col items-center justify-center gap-2.5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-purple-500/10 group text-center w-full">
-                    <div class="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400 group-hover:scale-110 transition duration-300">
-                        <i class="fa-solid fa-forward-step text-2xl"></i>
+                <button onclick="launchPlayer('km')" class="glass-panel p-3 rounded-xl hover:border-purple-500/40 hover:bg-gray-800/80 transition flex flex-col items-center justify-center gap-1.5 group active:scale-95">
+                    <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center text-xl group-hover:scale-110 transition">
+                        <i class="bi bi-display"></i>
                     </div>
-                    <div>
-                        <span class="block text-sm font-semibold text-slate-200 group-hover:text-purple-400">KM Player</span>
-                        <span class="text-[11px] text-slate-400">High Bitrate</span>
-                    </div>
+                    <span class="text-xs font-bold text-gray-200">KM Player</span>
+                    <span class="text-[9px] text-gray-400">HD / 4K</span>
                 </button>
 
                 <!-- S Player -->
-                <button onclick="s_player()" class="glass-card hover:bg-slate-800/80 p-4 rounded-2xl border border-white/10 hover:border-indigo-500/50 flex flex-col items-center justify-center gap-2.5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-indigo-500/10 group text-center w-full">
-                    <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 group-hover:scale-110 transition duration-300">
-                        <i class="fa-solid fa-compact-disc text-2xl"></i>
+                <button onclick="launchPlayer('splayer')" class="glass-panel p-3 rounded-xl hover:border-emerald-500/40 hover:bg-gray-800/80 transition flex flex-col items-center justify-center gap-1.5 group active:scale-95">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition">
+                        <i class="bi bi-lightning-fill"></i>
                     </div>
-                    <div>
-                        <span class="block text-sm font-semibold text-slate-200 group-hover:text-indigo-400">S Player</span>
-                        <span class="text-[11px] text-slate-400">Subtitles Ready</span>
-                    </div>
+                    <span class="text-xs font-bold text-gray-200">S Player</span>
+                    <span class="text-[9px] text-gray-400">Ultra Light</span>
                 </button>
 
-                <!-- HD Player (4K) -->
-                <button onclick="hd_player()" class="glass-card hover:bg-slate-800/80 p-4 rounded-2xl border border-white/10 hover:border-rose-500/50 flex flex-col items-center justify-center gap-2.5 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-rose-500/10 group text-center w-full">
-                    <div class="w-12 h-12 rounded-2xl bg-rose-500/10 flex items-center justify-center text-rose-500 group-hover:scale-110 transition duration-300">
-                        <i class="fa-solid fa-film text-2xl"></i>
+                <!-- Native Intent -->
+                <button onclick="launchPlayer('generic')" class="glass-panel p-3 rounded-xl hover:border-rose-500/40 hover:bg-gray-800/80 transition flex flex-col items-center justify-center gap-1.5 group active:scale-95">
+                    <div class="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center text-xl group-hover:scale-110 transition">
+                        <i class="bi bi-box-arrow-up-right"></i>
                     </div>
-                    <div>
-                        <span class="block text-sm font-semibold text-slate-200 group-hover:text-rose-400">HD / 4K</span>
-                        <span class="text-[11px] text-slate-400">Ultra Clear</span>
-                    </div>
+                    <span class="text-xs font-bold text-gray-200">Other App</span>
+                    <span class="text-[9px] text-gray-400">Choose App</span>
                 </button>
             </div>
-        </section>
-
-        <!-- Troubleshooting & Help Alerts -->
-        <section class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            
-            <!-- Codec / Audio Warning -->
-            <div class="glass-card p-4 rounded-2xl border-l-4 border-l-amber-500 flex items-start gap-3.5">
-                <div class="p-2 rounded-xl bg-amber-500/10 text-amber-400 shrink-0 mt-0.5">
-                    <i class="fa-solid fa-triangle-exclamation text-base"></i>
-                </div>
-                <div class="space-y-1">
-                    <h4 class="text-sm font-semibold text-slate-200">Video or Audio Not Playing?</h4>
-                    <p class="text-xs text-slate-400 leading-relaxed">
-                        Browsers often lack support for <strong>AC3/EAC3/MKV</strong> audio codecs. If you hear no sound or the video is black, tap <strong>VLC</strong> or <strong>MX Player</strong> above.
-                    </p>
-                </div>
-            </div>
-
-            <!-- Broken Links / Feedback -->
-            <div class="glass-card p-4 rounded-2xl border-l-4 border-l-cyan-500 flex items-start gap-3.5">
-                <div class="p-2 rounded-xl bg-cyan-500/10 text-cyan-400 shrink-0 mt-0.5">
-                    <i class="fa-solid fa-headset text-base"></i>
-                </div>
-                <div class="space-y-1">
-                    <h4 class="text-sm font-semibold text-slate-200">Broken Link or Slow Speed?</h4>
-                    <p class="text-xs text-slate-400 leading-relaxed">
-                        If this stream expired or links are inaccessible, report it directly to <a href="https://telegram.me/R_KOHLI" target="_blank" class="text-cyan-400 font-semibold underline hover:text-cyan-300">@R_KOHLI</a> on Telegram.
-                    </p>
-                </div>
-            </div>
-        </section>
+        </div>
 
     </main>
 
-    <!-- Sleek Modern Footer -->
-    <footer class="glass-panel border-t border-white/5 mt-auto">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
-            
-            <!-- Social and Community Badges -->
-            <div class="flex flex-wrap items-center justify-center gap-3">
-                <a href="https://t.me/KK_BOTS" target="_blank" class="w-10 h-10 rounded-xl bg-slate-800/80 hover:bg-sky-500/20 text-slate-400 hover:text-sky-400 border border-white/10 flex items-center justify-center transition duration-200">
-                    <i class="fa-brands fa-telegram text-lg"></i>
-                </a>
-                <a href="https://youtu.be/0QIy6NLEwKE" target="_blank" class="w-10 h-10 rounded-xl bg-slate-800/80 hover:bg-red-500/20 text-slate-400 hover:text-red-400 border border-white/10 flex items-center justify-center transition duration-200">
-                    <i class="fa-brands fa-youtube text-lg"></i>
-                </a>
-                <a href="https://instagram.com/ravikohlidk" target="_blank" class="w-10 h-10 rounded-xl bg-slate-800/80 hover:bg-pink-500/20 text-slate-400 hover:text-pink-400 border border-white/10 flex items-center justify-center transition duration-200">
-                    <i class="fa-brands fa-instagram text-lg"></i>
-                </a>
-                <a href="https://github.com" target="_blank" class="w-10 h-10 rounded-xl bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white border border-white/10 flex items-center justify-center transition duration-200">
-                    <i class="fa-brands fa-github text-lg"></i>
-                </a>
-            </div>
-
-            <!-- Credits & Copyright -->
-            <div class="text-center space-y-2 border-t border-white/5 pt-6">
-                <p class="text-xs text-slate-400 font-medium">
-                    Run and managed with ❤️ by 
-                    <a href="https://telegram.me/KK_BOTS" target="_blank" class="text-white hover:text-indigo-400 font-bold transition">KK_BOTS</a> &amp; 
-                    <a href="https://telegram.me/R_KOHLI" target="_blank" class="text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-indigo-400 font-bold hover:underline">RAVI KOHLI</a>
-                </p>
-                <p class="text-[11px] text-slate-500 font-mono">
-                    &copy; <span id="current-year"></span> KK_BOTS Portal. All rights reserved.
-                </p>
-            </div>
-        </div>
+    <!-- Footer -->
+    <footer class="glass-panel border-t border-gray-800/80 mt-6 py-4 text-center text-xs text-gray-500">
+        <p>© KK_BOTS - High Speed Telegram Streamer</p>
     </footer>
 
-    <!-- Plyr Media Player JS -->
+    <!-- Scripts -->
     <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
-
     <script>
-        // Set dynamic current year
-        document.getElementById('current-year').textContent = new Date().getFullYear();
-
-        // Handle template title fallback for preview
-        const titleEl = document.getElementById('file-title');
-        if (titleEl && (titleEl.textContent.trim() === '{{file_name}}' || titleEl.textContent.trim() === '')) {
-            titleEl.textContent = 'Demo Stream: Big Buck Bunny (1080p WebM/MP4)';
+        // 1. Get exact Stream Link from Jinja (no demo fallback)
+        let streamUrl = "{{file_url}}";
+        if (!streamUrl || streamUrl.includes("{{") || streamUrl === "") {
+            streamUrl = window.location.href.replace("/watch/", "/");
         }
 
-        let plyrInstance = null;
-        let originalPlaybackSpeed = 1;
-        let isHoldingSpeed = false;
-        let holdTimer = null;
-        let lastTapTime = 0;
-        let lastTapSide = null; // 'left' | 'right'
-        let singleTapTimeout = null;
-
-        // Initialize Plyr Video Player
+        // 2. Initialize Plyr
+        let player;
         document.addEventListener('DOMContentLoaded', () => {
-            const playerElem = document.querySelector('#player');
-            
-            // Handle local testing fallback video if source is unprocessed template
-            const sourceElem = playerElem.querySelector('source');
-            if (sourceElem && (sourceElem.getAttribute('src') === '{{file_url}}' || !sourceElem.getAttribute('src'))) {
-                sourceElem.setAttribute('src', 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4');
-                playerElem.load();
-            }
-
-            plyrInstance = new Plyr(playerElem, {
+            player = new Plyr('#player', {
                 controls: [
-                    'play-large',
-                    'restart',
-                    'rewind',
-                    'play',
-                    'fast-forward',
-                    'progress',
-                    'current-time',
-                    'duration',
-                    'mute',
-                    'volume',
-                    'captions',
-                    'settings',
-                    'pip',
-                    'airplay',
-                    'fullscreen'
+                    'play-large', 'play', 'progress', 'current-time',
+                    'duration', 'mute', 'volume', 'settings', 'pip', 'fullscreen'
                 ],
-                seekTime: 10,
-                speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 2, 4] },
+                settings: ['speed'],
+                speed: { selected: 1, options: [0.5, 0.75, 1, 1.25, 1.5, 2] },
                 keyboard: { focused: true, global: true },
                 tooltips: { controls: true, seek: true }
             });
 
-            plyrInstance.on('ready', () => {
-                originalPlaybackSpeed = plyrInstance.speed || 1;
-                initGestureControls();
-            });
-
-            plyrInstance.on('ratechange', () => {
-                if (!isHoldingSpeed) {
-                    originalPlaybackSpeed = plyrInstance.speed;
-                }
-            });
+            setupGestures();
         });
 
-        // Initialize Double-Tap (Seek) & Press-Hold (2X Speed)
-        function initGestureControls() {
-            const surface = document.getElementById('gesture-surface');
-            const speedBadge = document.getElementById('speed-badge');
-            const rewindIndicator = document.getElementById('rewind-indicator');
-            const forwardIndicator = document.getElementById('forward-indicator');
+        // 3. YouTube-style Gesture Handling (Hold for 2x & Double tap to seek)
+        function setupGestures() {
+            const gestureLayer = document.getElementById('gestureLayer');
+            const leftSide = document.getElementById('leftSide');
+            const rightSide = document.getElementById('rightSide');
+            const speedBadge = document.getElementById('speedBadge');
+            const leftPill = document.getElementById('leftPill');
+            const rightPill = document.getElementById('rightPill');
 
-            if (!surface || !plyrInstance) return;
+            let holdTimer = null;
+            let isHolding2X = false;
+            let lastTapTime = 0;
+            let tapTimeout = null;
 
-            // Trigger ripple animation
-            function triggerSeekFeedback(isForward) {
-                const el = isForward ? forwardIndicator : rewindIndicator;
-                el.classList.add('active');
-                if (navigator.vibrate) {
-                    navigator.vibrate(25);
-                }
-                setTimeout(() => {
-                    el.classList.remove('active');
-                }, 500);
-            }
-
-            // Start 2X Speed Boost on Press & Hold
-            function startSpeedBoost() {
-                if (!plyrInstance.playing) return;
-                isHoldingSpeed = true;
-                originalPlaybackSpeed = plyrInstance.speed || 1;
-                plyrInstance.speed = 2.0;
+            function start2X() {
+                if (!player) return;
+                isHolding2X = true;
+                player.speed = 2.0;
                 speedBadge.classList.add('active');
-                if (navigator.vibrate) {
-                    navigator.vibrate([35]);
-                }
+                if (navigator.vibrate) navigator.vibrate(40);
             }
 
-            // End 2X Speed Boost
-            function endSpeedBoost() {
-                if (holdTimer) {
-                    clearTimeout(holdTimer);
-                    holdTimer = null;
-                }
-                if (isHoldingSpeed) {
-                    isHoldingSpeed = false;
-                    plyrInstance.speed = originalPlaybackSpeed;
+            function stop2X() {
+                if (holdTimer) clearTimeout(holdTimer);
+                if (isHolding2X && player) {
+                    player.speed = 1.0;
                     speedBadge.classList.remove('active');
+                    isHolding2X = false;
                 }
             }
 
-            // Tap handling for double-tap seek vs single-tap toggle
-            function handleTap(event, clientX) {
-                const rect = surface.getBoundingClientRect();
-                const tapX = clientX - rect.left;
-                const isRightSide = tapX > (rect.width / 2);
-                const currentSide = isRightSide ? 'right' : 'left';
+            // Pointer events for press-and-hold
+            gestureLayer.addEventListener('pointerdown', (e) => {
+                if (e.button !== 0 && e.pointerType === 'mouse') return;
+                holdTimer = setTimeout(() => {
+                    start2X();
+                }, 400);
+            });
+
+            window.addEventListener('pointerup', stop2X);
+            window.addEventListener('pointercancel', stop2X);
+
+            // Double tap & Single tap logic
+            function handleTap(isRightSide) {
                 const now = Date.now();
-                const timeDiff = now - lastTapTime;
+                const diff = now - lastTapTime;
+                lastTapTime = now;
 
-                // Double Tap (within 320ms on same side)
-                if (timeDiff < 320 && lastTapSide === currentSide) {
-                    if (singleTapTimeout) {
-                        clearTimeout(singleTapTimeout);
-                        singleTapTimeout = null;
-                    }
+                if (diff < 300) {
+                    // Double Tap detected: Seek
+                    clearTimeout(tapTimeout);
                     if (isRightSide) {
-                        plyrInstance.forward(10);
-                        triggerSeekFeedback(true);
+                        player.currentTime = Math.min(player.duration || 999999, player.currentTime + 10);
+                        flashIndicator(rightPill);
                     } else {
-                        plyrInstance.rewind(10);
-                        triggerSeekFeedback(false);
+                        player.currentTime = Math.max(0, player.currentTime - 10);
+                        flashIndicator(leftPill);
                     }
-                    lastTapTime = 0;
-                    lastTapSide = null;
                 } else {
-                    // Potential single tap
-                    lastTapTime = now;
-                    lastTapSide = currentSide;
-                    singleTapTimeout = setTimeout(() => {
-                        // Single tap triggers play/pause toggle or reveals Plyr controls
-                        plyrInstance.togglePlay();
-                        singleTapTimeout = null;
-                    }, 330);
+                    // Single Tap: Toggle Play / Pause
+                    tapTimeout = setTimeout(() => {
+                        if (!isHolding2X && player) {
+                            player.togglePlay();
+                        }
+                    }, 300);
                 }
             }
 
-            // --- Touch Events (Mobile & Fullscreen) ---
-            surface.addEventListener('touchstart', (e) => {
-                const touch = e.touches[0];
-                const clientX = touch.clientX;
-                
-                // Start press-and-hold timer (450ms hold triggers 2X speed)
-                holdTimer = setTimeout(() => {
-                    startSpeedBoost();
-                }, 450);
+            function flashIndicator(pill) {
+                pill.classList.add('active');
+                setTimeout(() => pill.classList.remove('active'), 600);
+            }
 
-                surface._touchStartX = clientX;
-            }, { passive: true });
-
-            surface.addEventListener('touchend', (e) => {
-                if (isHoldingSpeed) {
-                    endSpeedBoost();
-                    e.preventDefault();
-                    return;
-                }
-                if (holdTimer) {
-                    clearTimeout(holdTimer);
-                    holdTimer = null;
-                    // It was a short tap, not a long press
-                    const clientX = surface._touchStartX || (e.changedTouches[0] ? e.changedTouches[0].clientX : 0);
-                    handleTap(e, clientX);
-                }
+            leftSide.addEventListener('click', (e) => {
+                if (isHolding2X) return;
+                handleTap(false);
             });
 
-            surface.addEventListener('touchcancel', endSpeedBoost);
-
-            // --- Mouse Events (Desktop) ---
-            surface.addEventListener('mousedown', (e) => {
-                if (e.button !== 0) return; // Left click only
-                holdTimer = setTimeout(() => {
-                    startSpeedBoost();
-                }, 450);
+            rightSide.addEventListener('click', (e) => {
+                if (isHolding2X) return;
+                handleTap(true);
             });
+        }
 
-            surface.addEventListener('mouseup', (e) => {
-                if (isHoldingSpeed) {
-                    endSpeedBoost();
-                    return;
-                }
-                if (holdTimer) {
-                    clearTimeout(holdTimer);
-                    holdTimer = null;
-                    handleTap(e, e.clientX);
-                }
+        // 4. External Player Launchers
+        function launchPlayer(type) {
+            const cleanUrl = streamUrl;
+            let launchUri = '';
+
+            switch(type) {
+                case 'vlc':
+                    launchUri = `vlc://${cleanUrl}`;
+                    break;
+                case 'mx':
+                    launchUri = `intent:${cleanUrl}#Intent;type=video/*;package=com.mxtech.videoplayer.ad;S.title=${encodeURIComponent(document.title)};end`;
+                    break;
+                case 'playit':
+                    launchUri = `playit://playerv2/video?url=${encodeURIComponent(cleanUrl)}`;
+                    break;
+                case 'km':
+                    launchUri = `intent:${cleanUrl}#Intent;type=video/*;package=com.kmplayer;end`;
+                    break;
+                case 'splayer':
+                    launchUri = `intent:${cleanUrl}#Intent;action=com.young.simple.player.playback_online;package=com.young.simple.player;type=video/*;end`;
+                    break;
+                case 'generic':
+                    launchUri = `intent:${cleanUrl}#Intent;action=android.intent.action.VIEW;type=video/*;end`;
+                    break;
+            }
+
+            window.location.href = launchUri;
+        }
+
+        // 5. Utility
+        function copyCurrentLink() {
+            navigator.clipboard.writeText(streamUrl).then(() => {
+                alert('स्ट्रीम लिंक कॉपी हो गया!');
+            }).catch(() => {
+                prompt("लिंक कॉपी करें:", streamUrl);
             });
-
-            surface.addEventListener('mouseleave', endSpeedBoost);
-        }
-
-        // Drawer Sidebar Toggle
-        function toggleSidebar() {
-            const drawer = document.getElementById('drawer-menu');
-            const backdrop = document.getElementById('drawer-backdrop');
-            
-            const isOpen = !drawer.classList.contains('-translate-x-full');
-            if (isOpen) {
-                drawer.classList.add('-translate-x-full');
-                backdrop.classList.add('opacity-0', 'pointer-events-none');
-            } else {
-                drawer.classList.remove('-translate-x-full');
-                backdrop.classList.remove('opacity-0', 'pointer-events-none');
-            }
-        }
-
-        // Generate normalized streaming link
-        function getDirectStreamUrl() {
-            const curLocation = window.location.href;
-            // If the URL template has /watch/, replace it with direct file path
-            let link = curLocation.includes('/watch/') ? curLocation.replace('/watch/', '/') : curLocation;
-            
-            // In dev or preview mode with template string, fallback to video element src
-            const vidSource = document.querySelector('#player source');
-            if (vidSource && vidSource.src && !vidSource.src.includes('{{file_url}}')) {
-                return vidSource.src;
-            }
-            return link;
-        }
-
-        // Copy Stream Link to Clipboard
-        function copyStreamURL() {
-            const streamUrl = getDirectStreamUrl();
-            const btn = document.getElementById('copy-btn');
-            const text = document.getElementById('copy-text');
-
-            const tempInput = document.createElement('input');
-            tempInput.value = streamUrl;
-            document.body.appendChild(tempInput);
-            tempInput.select();
-            
-            try {
-                document.execCommand('copy');
-                text.textContent = 'Copied!';
-                btn.classList.add('text-emerald-400', 'border-emerald-500/50');
-                setTimeout(() => {
-                    text.textContent = 'Copy Link';
-                    btn.classList.remove('text-emerald-400', 'border-emerald-500/50');
-                }, 2000);
-            } catch (err) {
-                console.error('Failed to copy', err);
-            } finally {
-                document.body.removeChild(tempInput);
-            }
-        }
-
-        // Native share sheet
-        function shareLink() {
-            if (navigator.share) {
-                navigator.share({
-                    title: document.title,
-                    url: window.location.href
-                }).catch(() => {});
-            } else {
-                copyStreamURL();
-            }
-        }
-
-        // External Player Protocols
-        function vlc_player() {
-            const link = getDirectStreamUrl();
-            window.location.href = `vlc://${link}`;
-        }
-
-        function mx_player() {
-            const link = getDirectStreamUrl();
-            window.location.href = `intent:${link}#Intent;package=com.mxtech.videoplayer.ad;type=video/*;end`;
-        }
-
-        function playit_player() {
-            const link = getDirectStreamUrl();
-            window.location.href = `playit://playerv2/video?url=${encodeURIComponent(link)}`;
-        }
-
-        function s_player() {
-            const link = getDirectStreamUrl();
-            window.location.href = `intent:${link}#Intent;action=com.young.simple.player.playback_online;package=com.young.simple.player;type=video/*;end`;
-        }
-
-        function km_player() {
-            const link = getDirectStreamUrl();
-            window.location.href = `intent:${link}#Intent;package=com.kmplayer;type=video/*;end`;
-        }
-
-        function hd_player() {
-            const link = getDirectStreamUrl();
-            window.location.href = `intent:${link}#Intent;package=uplayer.video.player;type=video/*;end`;
-        }
-
-        function lazyDownload() {
-            const link = getDirectStreamUrl();
-            const a = document.createElement('a');
-            a.href = link;
-            a.download = '';
-            a.target = '_blank';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
         }
     </script>
 </body>
 </html>
-```
