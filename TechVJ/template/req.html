@@ -1,6 +1,6 @@
 <!-- © LazyDeveloper / KK_BOTS -->
 <!DOCTYPE html>
-<html lang="hi" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -141,7 +141,7 @@
                     </span>
                     <span class="text-xs text-gray-400 font-mono">MP4 / MKV</span>
                 </div>
-                <h1 id="movieTitle" class="text-base sm:text-lg font-bold text-gray-100 truncate" title="{{file_name}}">
+                <h1 id="movieTitle" class="text-base sm:text-lg font-bold text-gray-100 truncate">
                     {{file_name}}
                 </h1>
             </div>
@@ -151,7 +151,7 @@
                     <i class="bi bi-link-45deg text-sm"></i>
                     <span>Copy Link</span>
                 </button>
-                <a id="downloadBtn" href="{{file_url}}" download class="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 hover:opacity-90 text-xs font-bold text-white shadow-lg shadow-pink-500/25 flex items-center gap-1.5 transition active:scale-95">
+                <a id="downloadBtn" href="{{file_url}}" class="px-4 py-2 rounded-xl bg-gradient-to-r from-pink-500 to-rose-500 hover:opacity-90 text-xs font-bold text-white shadow-lg shadow-pink-500/25 flex items-center gap-1.5 transition active:scale-95">
                     <i class="bi bi-cloud-arrow-down-fill text-sm"></i>
                     <span>Download</span>
                 </a>
@@ -160,7 +160,7 @@
 
         <!-- Player Screen & Custom Gestures -->
         <div class="player-wrapper shadow-2xl ring-1 ring-white/10">
-            <!-- 2X Indicator -->
+            <!-- 2X Speed Indicator -->
             <div id="speedBadge" class="speed-badge">
                 <i class="bi bi-lightning-charge-fill mr-1"></i> 2X Speed
             </div>
@@ -173,28 +173,27 @@
                 +10s <i class="bi bi-arrow-clockwise text-pink-400"></i>
             </div>
 
-            <!-- Video Element: Always Uses Real Jinja URL -->
+            <!-- Video Player (Loads purely from bot backend) -->
             <video id="player" playsinline controls preload="metadata" class="w-full h-full">
                 <source src="{{file_url}}" type="video/mp4">
-                <source src="{{file_url}}" type="video/x-matroska">
             </video>
 
-            <!-- Touch / Click Gesture Layer (Press hold for 2x, double tap for seek) -->
+            <!-- Gesture Surface Layer -->
             <div id="gestureLayer" class="gesture-surface">
                 <div class="gesture-side" id="leftSide"></div>
                 <div class="gesture-side" id="rightSide"></div>
             </div>
         </div>
 
-        <!-- External Players Grid -->
+        <!-- External Players Section -->
         <div>
             <div class="flex items-center justify-between mb-3 px-1">
                 <div>
                     <h2 class="text-sm font-bold text-gray-200 flex items-center gap-1.5">
                         <i class="bi bi-play-circle-fill text-pink-500"></i>
-                        एक्सटर्नल प्लेयर में चलाएं (Recommended)
+                        Open in External Player
                     </h2>
-                    <p class="text-[11px] text-gray-400">यदि ब्राउज़र में केवल ऑडियो आ रहा है या वीडियो अटक रहा है, तो VLC या MX Player चुनें।</p>
+                    <p class="text-[11px] text-gray-400">Best for MKV/AC3 files without browser codec errors.</p>
                 </div>
             </div>
 
@@ -244,7 +243,7 @@
                     <span class="text-[9px] text-gray-400">Ultra Light</span>
                 </button>
 
-                <!-- Native Intent -->
+                <!-- Generic Intent -->
                 <button onclick="launchPlayer('generic')" class="glass-panel p-3 rounded-xl hover:border-rose-500/40 hover:bg-gray-800/80 transition flex flex-col items-center justify-center gap-1.5 group active:scale-95">
                     <div class="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center text-xl group-hover:scale-110 transition">
                         <i class="bi bi-box-arrow-up-right"></i>
@@ -259,19 +258,24 @@
 
     <!-- Footer -->
     <footer class="glass-panel border-t border-gray-800/80 mt-6 py-4 text-center text-xs text-gray-500">
-        <p>© KK_BOTS - High Speed Telegram Streamer</p>
+        <p>© KK_BOTS - Stream Hub</p>
     </footer>
+
+    <!-- Hidden Raw Source For JS (Safe Jinja2 extraction) -->
+    <input type="hidden" id="raw_stream_url" value="{{file_url}}">
 
     <!-- Scripts -->
     <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
     <script>
-        // 1. Get exact Stream Link from Jinja (no demo fallback)
-        let streamUrl = "{{file_url}}";
-        if (!streamUrl || streamUrl.includes("{{") || streamUrl === "") {
+        // 1. Safe extraction of the link directly from HTML value
+        const rawInput = document.getElementById('raw_stream_url');
+        let streamUrl = rawInput ? rawInput.value.trim() : "";
+        
+        if (!streamUrl || streamUrl.includes("{{")) {
             streamUrl = window.location.href.replace("/watch/", "/");
         }
 
-        // 2. Initialize Plyr
+        // 2. Setup Plyr
         let player;
         document.addEventListener('DOMContentLoaded', () => {
             player = new Plyr('#player', {
@@ -288,7 +292,7 @@
             setupGestures();
         });
 
-        // 3. YouTube-style Gesture Handling (Hold for 2x & Double tap to seek)
+        // 3. YouTube Gestures (Press-Hold for 2x & Double tap to seek)
         function setupGestures() {
             const gestureLayer = document.getElementById('gestureLayer');
             const leftSide = document.getElementById('leftSide');
@@ -319,25 +323,20 @@
                 }
             }
 
-            // Pointer events for press-and-hold
             gestureLayer.addEventListener('pointerdown', (e) => {
                 if (e.button !== 0 && e.pointerType === 'mouse') return;
-                holdTimer = setTimeout(() => {
-                    start2X();
-                }, 400);
+                holdTimer = setTimeout(start2X, 400);
             });
 
             window.addEventListener('pointerup', stop2X);
             window.addEventListener('pointercancel', stop2X);
 
-            // Double tap & Single tap logic
             function handleTap(isRightSide) {
                 const now = Date.now();
                 const diff = now - lastTapTime;
                 lastTapTime = now;
 
                 if (diff < 300) {
-                    // Double Tap detected: Seek
                     clearTimeout(tapTimeout);
                     if (isRightSide) {
                         player.currentTime = Math.min(player.duration || 999999, player.currentTime + 10);
@@ -347,7 +346,6 @@
                         flashIndicator(leftPill);
                     }
                 } else {
-                    // Single Tap: Toggle Play / Pause
                     tapTimeout = setTimeout(() => {
                         if (!isHolding2X && player) {
                             player.togglePlay();
@@ -361,12 +359,12 @@
                 setTimeout(() => pill.classList.remove('active'), 600);
             }
 
-            leftSide.addEventListener('click', (e) => {
+            leftSide.addEventListener('click', () => {
                 if (isHolding2X) return;
                 handleTap(false);
             });
 
-            rightSide.addEventListener('click', (e) => {
+            rightSide.addEventListener('click', () => {
                 if (isHolding2X) return;
                 handleTap(true);
             });
@@ -401,12 +399,12 @@
             window.location.href = launchUri;
         }
 
-        // 5. Utility
+        // 5. Copy Link
         function copyCurrentLink() {
             navigator.clipboard.writeText(streamUrl).then(() => {
-                alert('स्ट्रीम लिंक कॉपी हो गया!');
+                alert('Stream link copied to clipboard!');
             }).catch(() => {
-                prompt("लिंक कॉपी करें:", streamUrl);
+                prompt("Copy Link:", streamUrl);
             });
         }
     </script>
