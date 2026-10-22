@@ -1,4 +1,4 @@
-<!-- © LazyDeveloper / KK_BOTS -->
+<!-- © KK_BOTS / Auto Filter Stream -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -109,14 +109,14 @@
 
 <body class="min-h-screen flex flex-col justify-between selection:bg-pink-500 selection:text-white">
 
-    <!-- Top Navigation -->
+    <!-- Navbar -->
     <header class="sticky top-0 z-40 glass-panel border-b border-gray-800/80">
         <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <img src="https://graph.org/file/ab71e4363ebc7a7c992b1.jpg" alt="Logo" class="w-10 h-10 rounded-xl object-cover ring-2 ring-pink-500/30">
                 <div class="flex flex-col">
                     <span class="font-black text-lg bg-clip-text text-transparent bg-gradient-to-r from-pink-500 via-rose-400 to-amber-400 leading-tight">KK_BOTS</span>
-                    <span class="text-[10px] uppercase tracking-widest text-gray-400 font-semibold">STREAM HUB</span>
+                    <span class="text-[10px] uppercase tracking-widest text-gray-400 font-semibold">ONLINE STREAM</span>
                 </div>
             </div>
 
@@ -129,17 +129,17 @@
         </div>
     </header>
 
-    <!-- Main Content -->
+    <!-- Main Section -->
     <main class="max-w-5xl mx-auto w-full px-4 py-4 sm:py-6 flex-1 flex flex-col gap-5">
         
-        <!-- Video Header Info -->
+        <!-- File Details Card -->
         <div class="glass-panel p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div class="flex-1 min-w-0">
                 <div class="flex items-center gap-2 mb-1">
                     <span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[10px] font-bold tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 uppercase">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Direct Stream
                     </span>
-                    <span class="text-xs text-gray-400 font-mono">MP4 / MKV</span>
+                    <span class="text-xs text-gray-400 font-mono">Fast Server</span>
                 </div>
                 <h1 id="movieTitle" class="text-base sm:text-lg font-bold text-gray-100 truncate">
                     {{file_name}}
@@ -158,9 +158,9 @@
             </div>
         </div>
 
-        <!-- Player Screen & Custom Gestures -->
+        <!-- Video Player -->
         <div class="player-wrapper shadow-2xl ring-1 ring-white/10">
-            <!-- 2X Speed Indicator -->
+            <!-- 2X Indicator -->
             <div id="speedBadge" class="speed-badge">
                 <i class="bi bi-lightning-charge-fill mr-1"></i> 2X Speed
             </div>
@@ -173,19 +173,19 @@
                 +10s <i class="bi bi-arrow-clockwise text-pink-400"></i>
             </div>
 
-            <!-- Video Player (Loads purely from bot backend) -->
+            <!-- HTML Video Source -->
             <video id="player" playsinline controls preload="metadata" class="w-full h-full">
                 <source src="{{file_url}}" type="video/mp4">
             </video>
 
-            <!-- Gesture Surface Layer -->
+            <!-- Touch/Gesture Surface -->
             <div id="gestureLayer" class="gesture-surface">
                 <div class="gesture-side" id="leftSide"></div>
                 <div class="gesture-side" id="rightSide"></div>
             </div>
         </div>
 
-        <!-- External Players Section -->
+        <!-- External App Launcher Buttons -->
         <div>
             <div class="flex items-center justify-between mb-3 px-1">
                 <div>
@@ -193,31 +193,31 @@
                         <i class="bi bi-play-circle-fill text-pink-500"></i>
                         Open in External Player
                     </h2>
-                    <p class="text-[11px] text-gray-400">Best for MKV/AC3 files without browser codec errors.</p>
+                    <p class="text-[11px] text-gray-400">अगर ब्राउज़र में आवाज़ न आए या वीडियो लोड न हो, तो VLC या MX Player में चलाएं।</p>
                 </div>
             </div>
 
             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2.5">
                 <!-- VLC -->
-                <button onclick="launchPlayer('vlc')" class="glass-panel p-3 rounded-xl hover:border-amber-500/40 hover:bg-gray-800/80 transition flex flex-col items-center justify-center gap-1.5 group active:scale-95">
+                <button onclick="vlc_player()" class="glass-panel p-3 rounded-xl hover:border-amber-500/40 hover:bg-gray-800/80 transition flex flex-col items-center justify-center gap-1.5 group active:scale-95">
                     <div class="w-10 h-10 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center text-xl group-hover:scale-110 transition">
                         <i class="bi bi-cone-striped"></i>
                     </div>
                     <span class="text-xs font-bold text-gray-200">VLC Player</span>
-                    <span class="text-[9px] text-gray-400">Universal Codecs</span>
+                    <span class="text-[9px] text-gray-400">All Codecs</span>
                 </button>
 
                 <!-- MX Player -->
-                <button onclick="launchPlayer('mx')" class="glass-panel p-3 rounded-xl hover:border-blue-500/40 hover:bg-gray-800/80 transition flex flex-col items-center justify-center gap-1.5 group active:scale-95">
+                <button onclick="mx_player()" class="glass-panel p-3 rounded-xl hover:border-blue-500/40 hover:bg-gray-800/80 transition flex flex-col items-center justify-center gap-1.5 group active:scale-95">
                     <div class="w-10 h-10 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center text-xl group-hover:scale-110 transition">
                         <i class="bi bi-play-btn-fill"></i>
                     </div>
                     <span class="text-xs font-bold text-gray-200">MX Player</span>
-                    <span class="text-[9px] text-gray-400">HW+ Decoding</span>
+                    <span class="text-[9px] text-gray-400">HW+ Decode</span>
                 </button>
 
                 <!-- PlayIt -->
-                <button onclick="launchPlayer('playit')" class="glass-panel p-3 rounded-xl hover:border-cyan-500/40 hover:bg-gray-800/80 transition flex flex-col items-center justify-center gap-1.5 group active:scale-95">
+                <button onclick="playit_player()" class="glass-panel p-3 rounded-xl hover:border-cyan-500/40 hover:bg-gray-800/80 transition flex flex-col items-center justify-center gap-1.5 group active:scale-95">
                     <div class="w-10 h-10 rounded-xl bg-cyan-500/10 text-cyan-400 flex items-center justify-center text-xl group-hover:scale-110 transition">
                         <i class="bi bi-phone-flip"></i>
                     </div>
@@ -226,7 +226,7 @@
                 </button>
 
                 <!-- KM Player -->
-                <button onclick="launchPlayer('km')" class="glass-panel p-3 rounded-xl hover:border-purple-500/40 hover:bg-gray-800/80 transition flex flex-col items-center justify-center gap-1.5 group active:scale-95">
+                <button onclick="km_player()" class="glass-panel p-3 rounded-xl hover:border-purple-500/40 hover:bg-gray-800/80 transition flex flex-col items-center justify-center gap-1.5 group active:scale-95">
                     <div class="w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 flex items-center justify-center text-xl group-hover:scale-110 transition">
                         <i class="bi bi-display"></i>
                     </div>
@@ -235,21 +235,21 @@
                 </button>
 
                 <!-- S Player -->
-                <button onclick="launchPlayer('splayer')" class="glass-panel p-3 rounded-xl hover:border-emerald-500/40 hover:bg-gray-800/80 transition flex flex-col items-center justify-center gap-1.5 group active:scale-95">
+                <button onclick="s_player()" class="glass-panel p-3 rounded-xl hover:border-emerald-500/40 hover:bg-gray-800/80 transition flex flex-col items-center justify-center gap-1.5 group active:scale-95">
                     <div class="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-xl group-hover:scale-110 transition">
                         <i class="bi bi-lightning-fill"></i>
                     </div>
                     <span class="text-xs font-bold text-gray-200">S Player</span>
-                    <span class="text-[9px] text-gray-400">Ultra Light</span>
+                    <span class="text-[9px] text-gray-400">Lightweight</span>
                 </button>
 
-                <!-- Generic Intent -->
-                <button onclick="launchPlayer('generic')" class="glass-panel p-3 rounded-xl hover:border-rose-500/40 hover:bg-gray-800/80 transition flex flex-col items-center justify-center gap-1.5 group active:scale-95">
+                <!-- Other Player -->
+                <button onclick="hd_player()" class="glass-panel p-3 rounded-xl hover:border-rose-500/40 hover:bg-gray-800/80 transition flex flex-col items-center justify-center gap-1.5 group active:scale-95">
                     <div class="w-10 h-10 rounded-xl bg-rose-500/10 text-rose-400 flex items-center justify-center text-xl group-hover:scale-110 transition">
                         <i class="bi bi-box-arrow-up-right"></i>
                     </div>
-                    <span class="text-xs font-bold text-gray-200">Other App</span>
-                    <span class="text-[9px] text-gray-400">Choose App</span>
+                    <span class="text-xs font-bold text-gray-200">Other Player</span>
+                    <span class="text-[9px] text-gray-400">System Intent</span>
                 </button>
             </div>
         </div>
@@ -258,24 +258,25 @@
 
     <!-- Footer -->
     <footer class="glass-panel border-t border-gray-800/80 mt-6 py-4 text-center text-xs text-gray-500">
-        <p>© KK_BOTS - Stream Hub</p>
+        <p>© KK_BOTS - Auto Filter Streaming Bot</p>
     </footer>
 
-    <!-- Hidden Raw Source For JS (Safe Jinja2 extraction) -->
-    <input type="hidden" id="raw_stream_url" value="{{file_url}}">
+    <!-- Safe URL Anchor: Jinja2 will only render this single place -->
+    <a id="streamSourceAnchor" href="{{file_url}}" style="display:none;"></a>
 
     <!-- Scripts -->
     <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
     <script>
-        // 1. Safe extraction of the link directly from HTML value
-        const rawInput = document.getElementById('raw_stream_url');
-        let streamUrl = rawInput ? rawInput.value.trim() : "";
-        
-        if (!streamUrl || streamUrl.includes("{{")) {
-            streamUrl = window.location.href.replace("/watch/", "/");
+        // 1. Filter Bot Streaming Link Extraction (Same as your original code logic)
+        const anchor = document.getElementById('streamSourceAnchor');
+        let lazyLink = anchor ? anchor.getAttribute('href') : "";
+
+        // Fallback to original filter bot replace logic if anchor fails
+        if (!lazyLink || lazyLink.indexOf("{{") !== -1) {
+            lazyLink = window.location.href.replace("/watch/", "/");
         }
 
-        // 2. Setup Plyr
+        // 2. Setup Player
         let player;
         document.addEventListener('DOMContentLoaded', () => {
             player = new Plyr('#player', {
@@ -292,7 +293,7 @@
             setupGestures();
         });
 
-        // 3. YouTube Gestures (Press-Hold for 2x & Double tap to seek)
+        // 3. YouTube Gestures (Press & Hold for 2x, Double tap to seek)
         function setupGestures() {
             const gestureLayer = document.getElementById('gestureLayer');
             const leftSide = document.getElementById('leftSide');
@@ -370,41 +371,36 @@
             });
         }
 
-        // 4. External Player Launchers
-        function launchPlayer(type) {
-            const cleanUrl = streamUrl;
-            let launchUri = '';
-
-            switch(type) {
-                case 'vlc':
-                    launchUri = `vlc://${cleanUrl}`;
-                    break;
-                case 'mx':
-                    launchUri = `intent:${cleanUrl}#Intent;type=video/*;package=com.mxtech.videoplayer.ad;S.title=${encodeURIComponent(document.title)};end`;
-                    break;
-                case 'playit':
-                    launchUri = `playit://playerv2/video?url=${encodeURIComponent(cleanUrl)}`;
-                    break;
-                case 'km':
-                    launchUri = `intent:${cleanUrl}#Intent;type=video/*;package=com.kmplayer;end`;
-                    break;
-                case 'splayer':
-                    launchUri = `intent:${cleanUrl}#Intent;action=com.young.simple.player.playback_online;package=com.young.simple.player;type=video/*;end`;
-                    break;
-                case 'generic':
-                    launchUri = `intent:${cleanUrl}#Intent;action=android.intent.action.VIEW;type=video/*;end`;
-                    break;
-            }
-
-            window.location.href = launchUri;
+        // 4. Exact Filter Bot App Launchers (Original Methods)
+        function vlc_player() {
+            window.location.href = `vlc://${lazyLink}`;
         }
 
-        // 5. Copy Link
+        function mx_player() {
+            window.location.href = `intent:${lazyLink}#Intent;package=com.mxtech.videoplayer.ad;type=video/*;end`;
+        }
+
+        function playit_player() {
+            window.location.href = `playit://playerv2/video?url=${lazyLink}`;
+        }
+
+        function s_player() {
+            window.location.href = `intent:${lazyLink}#Intent;action=com.young.simple.player.playback_online;package=com.young.simple.player;type=video/*;end`;
+        }
+
+        function km_player() {
+            window.location.href = `intent:${lazyLink}#Intent;package=com.kmplayer;type=video/*;end`;
+        }
+
+        function hd_player() {
+            window.location.href = `intent:${lazyLink}#Intent;action=android.intent.action.VIEW;type=video/*;end`;
+        }
+
         function copyCurrentLink() {
-            navigator.clipboard.writeText(streamUrl).then(() => {
-                alert('Stream link copied to clipboard!');
+            navigator.clipboard.writeText(lazyLink).then(() => {
+                alert('Stream URL Copied!');
             }).catch(() => {
-                prompt("Copy Link:", streamUrl);
+                prompt("Copy Stream URL:", lazyLink);
             });
         }
     </script>
